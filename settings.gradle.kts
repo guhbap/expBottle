@@ -1,1 +1,1 @@
-rootProject.name = "expBottle"
+rootProject.name = "Exp2Bottle"

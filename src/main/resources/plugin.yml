@@ -1,4 +1,4 @@
-name: expbottle
+name: exp2Bottle
 version: '1.6'
 main: ru.guhbap.expbottle.ExpBottle
 api-version: '1.21.6'
