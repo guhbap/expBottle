@@ -1,0 +1,6 @@
+name: expbottle
+version: '1.6'
+main: ru.guhbap.expbottle.ExpBottle
+api-version: '1.21.6'
+authors: [ guhbap ]
+description: 'Позволяет игрокам получать бутылочки с опытом альтернативным способом, используя собственный опыт, хранящийся у игрока'
