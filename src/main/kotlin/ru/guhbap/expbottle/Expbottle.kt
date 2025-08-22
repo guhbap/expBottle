@@ -15,23 +15,27 @@ class ExpBottle : JavaPlugin(), Listener {
 
     private var expCost: Int = 10
     private var removeBottle: Boolean = true
+    private var expUseCooldown: Int = 10
     override fun onEnable() {
         saveDefaultConfig()
         expCost = config.getInt("exp-cost", 10)
-        removeBottle = config.getBoolean("exp-cost", true)
+        removeBottle = config.getBoolean("remove-bottle", true)
+        expUseCooldown = config.getInt("exp-use-cooldown", 10)
         server.pluginManager.registerEvents(this, this)
-        logger.info("ExpBottlePlugin enabled!")
     }
 
     override fun onDisable() {
         logger.info("ExpBottlePlugin disabled!")
     }
+
     @EventHandler
     fun onPlayerUse(event: PlayerInteractEvent) {
         val player = event.player
         val item = event.item ?: return
 
-        if (item.type == Material.GLASS_BOTTLE && player.isSneaking && (event.action == Action.RIGHT_CLICK_BLOCK || event.action == Action.RIGHT_CLICK_AIR)  ) {
+        // Запрещаем использовать бутылку опыта, если игрок крадется
+
+        if (item.type == Material.GLASS_BOTTLE && player.isSneaking && (event.action == Action.RIGHT_CLICK_BLOCK || event.action == Action.RIGHT_CLICK_AIR)) {
 
             val playerExp = getPlayerExp(player)
             if (playerExp < expCost) {
@@ -40,16 +44,18 @@ class ExpBottle : JavaPlugin(), Listener {
             }
 
             // Отнимаем 10 опыта
-            setPlayerExp(player, playerExp-expCost)
+            setPlayerExp(player, playerExp - expCost)
 //            changePlayerExp(player, -expCost)
 
-            // Убираем 1 пустую бутылку
-            item.amount -= 1
-
             // Даём пузырёк опыта
-            if (removeBottle){
-                player.inventory.addItem(ItemStack(Material.EXPERIENCE_BOTTLE, 1))
+            if (removeBottle) {
+                // Убираем 1 пустую бутылку
+                item.amount -= 1
             }
+            player.inventory.addItem(ItemStack(Material.EXPERIENCE_BOTTLE, 1))
+            player.setCooldown(Material.EXPERIENCE_BOTTLE, expUseCooldown) // 10 тиков = 0.5 сек
+
+
         }
     }
 
@@ -93,11 +99,12 @@ class ExpBottle : JavaPlugin(), Listener {
         return exp
     }
 
-    fun setPlayerExp(player: Player, exp:Int){
+    fun setPlayerExp(player: Player, exp: Int) {
         player.exp = 0f
         player.level = 0
         player.giveExp(exp)
     }
+
     // Give or take EXP
     fun changePlayerExp(player: Player, exp: Int): Int {
         // Get player's current exp

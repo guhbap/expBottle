@@ -1,5 +1,5 @@
 name: exp2Bottle
-version: '1.6'
+version: '1.7'
 main: ru.guhbap.expbottle.ExpBottle
 api-version: '1.21.6'
 authors: [ guhbap ]
